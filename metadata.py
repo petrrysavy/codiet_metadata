@@ -21,6 +21,7 @@ class DataFrameMetadata:
         self.categorical_features = categorical_features if categorical_features else []
         self.version = version
         self.comment = comment
+        self.metadata = {}
 
     def generate_metadata(self):
         """Generate detailed metadata for the DataFrame"""
@@ -40,6 +41,7 @@ class DataFrameMetadata:
                            "Nottingham are supported by UK Research and Innovation (UKRI) under the UK government’s "
                            "Horizon Europe funding guarantee [grant number 101084642]."
         }
+        metadata.update(self.metadata)
 
         for col in self.df.columns:
             col_data = self.df[col]

@@ -18,7 +18,7 @@ df = df.rename(columns={"PATIENT_ID": "patient", "VISIT(1,3)": "visit", "Aliquot
                         "BOX_POSITION (Box number_ Row number_ Column number)": "box-position",
                         "Weight [g]": "sample-weight", "UHPLC H20 [mL]": "uhplc-h2o", "NMR rack": "nmr-rack"})
 df["visit"] = df["visit"].str.extract(r"^(V\d+)")
-#TODO ask about the visit number
+# ask about the visit number - right use the first value (V1/V3)
 
 print(df.columns)
 
@@ -41,7 +41,7 @@ comments = {
     "box-position": "BOX_POSITION (Box number_ Row number_ Column number)",
     "uhplc-h2o": "UHPLC H20 [mL]"
 }
-metadata = DataFrameMetadata(df, "1.0", column_comments=comments, comment="SCAFS, stool data",
+metadata = DataFrameMetadata(df, "1.1", column_comments=comments, comment="SCAFS, stool data",
                              categorical_features=["visit", "type", "gender"])
 
 save(metadata, "scafs-stool")
