@@ -17,6 +17,16 @@ def column_names_to_lowercase(df):
     return df
 
 
+def column_names_remove_spaces(df):
+    df.columns = df.columns.str.replace(" ", "-", regex=True)
+    return df
+
+
+def column_names_remove_underscores(df):
+    df.columns = df.columns.str.replace("_", "-", regex=True)
+    return df
+
+
 def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[]):
     d = {}
     for col in int_cols:
