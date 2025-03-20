@@ -15,9 +15,10 @@ class DataFrameMetadata:
     What else should be in the metadata?
     """
 
-    def __init__(self, df, version, column_comments=None, categorical_features=None, comment=""):
+    def __init__(self, df, version, column_comments=None, column_units=None, categorical_features=None, comment=""):
         self.df = df
         self.column_comments = column_comments if column_comments else {}
+        self.column_units = column_units if column_units else {}
         self.categorical_features = categorical_features if categorical_features else []
         self.version = version
         self.comment = comment
@@ -54,8 +55,11 @@ class DataFrameMetadata:
                 "most_frequent_value": str(col_data.mode().iloc[0] if not col_data.mode().empty else None),
                 "first_value": str(col_data.iloc[0] if not col_data.empty else None),
                 "last_value": str(col_data.iloc[-1] if not col_data.empty else None),
-                "comment": self.column_comments.get(col, ""),
             }
+            if col in self.column_comments.keys():
+                metadata["column_info"][col]["comment"] = self.column_comments.get(col)
+            if col in self.column_units.keys():
+                metadata["column_info"][col]["unit"] = self.column_units.get(col)
 
             if col_data.dtype.kind in "biufc":  # If column is numeric
                 metadata["column_info"][col].update({

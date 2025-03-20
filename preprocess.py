@@ -27,6 +27,19 @@ def column_names_remove_underscores(df):
     return df
 
 
+def variable_comment_unit_df_to_dict(df, names, name_lambda):
+    column_comments = {}
+    column_units = {}
+    for variable, comment, unit in names.itertuples(index=False, name=None):
+        variable = name_lambda(variable)
+        assert variable in df.columns
+
+        column_comments[variable] = comment
+        column_units[variable] = unit
+
+    return column_comments, column_units
+
+
 def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[]):
     d = {}
     for col in int_cols:

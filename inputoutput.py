@@ -15,6 +15,7 @@ def save(dfm: DataFrameMetadata, name):
     dfm.metadata["csv_file_size"] = str(round(os.path.getsize(csv_path) / 1024))+"KB"
     dfm.metadata["pkl_file_size"] = str(round(os.path.getsize(pkl_path) / 1024))+"KB"
     dfm.metadata["xlsx_file_size"] = str(round(os.path.getsize(xlsx_path) / 1024))+"KB"
+    dfm.metadata["file-name"] = name
 
     dfm.save_metadata_json(os.path.join(Settings().getdir(SettingsKeys.METADATADIR), name + ".json"))
     dfm.save_metadata_xml(os.path.join(Settings().getdir(SettingsKeys.METADATADIR), name + ".xml"))
