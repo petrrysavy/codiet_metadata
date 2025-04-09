@@ -33,7 +33,7 @@ df = df[string_cols + [col for col in df.columns if col not in string_cols]]
 
 test_data_frame(df)
 
-metadata = DataFrameMetadata(df, "1.1", comment="Mass spectrometry - serum", categorical_features=["visit", "type"])
+metadata = DataFrameMetadata(df, "1.3", comment="Mass spectrometry - urine", categorical_features=["visit", "type"])
 
 save(metadata, "ms-urine")
 

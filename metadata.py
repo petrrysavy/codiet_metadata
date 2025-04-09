@@ -15,10 +15,20 @@ class DataFrameMetadata:
     What else should be in the metadata?
     """
 
-    def __init__(self, df, version, column_comments=None, column_units=None, categorical_features=None, comment=""):
+    def __init__(self, df, version, column_comments=None, column_units=None, categorical_features=None, column_info=None, comment=""):
         self.df = df
-        self.column_comments = column_comments if column_comments else {}
-        self.column_units = column_units if column_units else {}
+        column_comments = column_comments if column_comments else {}
+        column_units = column_units if column_units else {}
+        self.column_info = column_info if column_info else {}
+        for col, comment in column_comments.items():
+            if col not in self.column_info.keys():
+                self.column_info[col] = {}
+            self.column_info[col]["comment"] = comment
+        for col, unit in column_units.items():
+            if col not in self.column_info.keys():
+                self.column_info[col] = {}
+            self.column_info[col]["unit"] = unit
+
         self.categorical_features = categorical_features if categorical_features else []
         self.version = version
         self.comment = comment
@@ -45,6 +55,12 @@ class DataFrameMetadata:
         metadata.update(self.metadata)
 
         for col in self.df.columns:
+            # columns named by numeric value - untargeted NMR, skip
+            if isinstance(col, float) or col.replace(".", "").isdigit():
+                if col in self.column_info.keys():
+                    metadata["column_info"][str(col)] = self.column_info.get(col)
+                continue
+
             col_data = self.df[col]
             metadata["column_info"][col] = {
                 "dtype": str(col_data.dtype),
@@ -56,10 +72,8 @@ class DataFrameMetadata:
                 "first_value": str(col_data.iloc[0] if not col_data.empty else None),
                 "last_value": str(col_data.iloc[-1] if not col_data.empty else None),
             }
-            if col in self.column_comments.keys():
-                metadata["column_info"][col]["comment"] = self.column_comments.get(col)
-            if col in self.column_units.keys():
-                metadata["column_info"][col]["unit"] = self.column_units.get(col)
+            if col in self.column_info.keys():
+                metadata["column_info"][col].update(self.column_info.get(col))
 
             if col_data.dtype.kind in "biufc":  # If column is numeric
                 metadata["column_info"][col].update({
@@ -92,7 +106,9 @@ class DataFrameMetadata:
             if isinstance(value, dict):
                 sub_element = ET.SubElement(root, key)
                 for sub_key, sub_value in value.items():
-                    column_element = ET.SubElement(sub_element, sub_key)
+                    column_element = ET.SubElement(sub_element, "column")
+                    sub_sub_element = ET.SubElement(column_element, "name")
+                    sub_sub_element.text = str(sub_key)
                     for k, v in sub_value.items():
                         sub_sub_element = ET.SubElement(column_element, k)
                         sub_sub_element.text = str(v)

@@ -41,7 +41,7 @@ comments = {
     "box-position": "BOX_POSITION (Box number_ Row number_ Column number)",
     "uhplc-h2o": "UHPLC H20 [mL]"
 }
-metadata = DataFrameMetadata(df, "1.1", column_comments=comments, comment="SCAFS, stool data",
+metadata = DataFrameMetadata(df, "1.3", column_comments=comments, comment="SCAFS, stool data",
                              categorical_features=["visit", "type", "gender"])
 
 save(metadata, "scafs-stool")

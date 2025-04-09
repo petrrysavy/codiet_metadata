@@ -35,7 +35,7 @@ df = change_types(df, string_cols=string_cols, float_cols=float_cols)
 
 test_data_frame(df)
 
-metadata = DataFrameMetadata(df, "1.2", comment="Mass spectrometry - serum", categorical_features=["visit"],
+metadata = DataFrameMetadata(df, "1.3", comment="Lipidomics - dry blood and red blood cells", categorical_features=["visit"],
                              column_comments=column_comments, column_units=column_units)
 
 save(metadata, "lipidomics-dbs-rbc")
