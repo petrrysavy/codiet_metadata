@@ -11,7 +11,7 @@ def clean_patient_column(df):
 
 def replace_empty_with_na(df):
     """Replaces all empty strings, None, and NaN values with pd.NA in a DataFrame."""
-    return df.replace(["", None, np.nan, "<LOQ"], pd.NA)
+    return df.replace(["", None, np.nan, "<LOQ", "N/A", " "], pd.NA)
 
 
 def column_names_to_lowercase(df):
@@ -64,7 +64,7 @@ def variable_comment_unit_df_other_to_dict(df, names, other_info_name, name_lamb
     return column_comments, column_units, column_info
 
 
-def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], safe=True):
+def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], bool_cols=[], safe=True):
     d = {}
     for col in int_cols:
         d[col] = "Int64"
@@ -72,6 +72,8 @@ def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], s
         d[col] = "Float64"
     for col in string_cols:
         d[col] = "string"
+    for col in bool_cols:
+        d[col] = "boolean"
 
     if safe:
         df = df.astype(d)
@@ -79,5 +81,5 @@ def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], s
         df = df.astype(d, errors="ignore")
 
     for col in date_cols:
-        df[col] = pd.to_datetime(df[col])
+        df[col] = pd.to_datetime(df[col], format='mixed')
     return df
