@@ -47,14 +47,48 @@ column_comments, column_units, column_info = variable_comment_unit_df_other_to_d
 
 df = replace_empty_with_na(df)
 
+def convert_to_float(val):
+    if isinstance(val, str):
+        try:
+            # Try direct float conversion first
+            return float(val)
+        except ValueError:
+            # If it fails, fix formatting
+            parts = val.split('.')
+            if len(parts) > 2:
+                whole = ''.join(parts[:-1])
+                decimal = parts[-1]
+                cleaned = whole + '.' + decimal
+                try:
+                    return float(cleaned)
+                except ValueError:
+                    return None
+            else:
+                return None
+    elif isinstance(val, (int, float)):
+        return float(val)
+    else:
+        return None
+
+
+df['tp'] = df['tp'].apply(convert_to_float)
+df['lf'] = df['lf'].apply(convert_to_float)
+df['vlf'] = df['vlf'].apply(convert_to_float)
+df['hf'] = df['hf'].apply(convert_to_float)
+tolerance = 1e-2
+mask = df[['tp', 'vlf', 'lf', 'hf']].notna().all(axis=1)
+expected_tp = df.loc[mask, 'vlf'] + df.loc[mask, 'lf'] + df.loc[mask, 'hf']
+assert np.allclose(df.loc[mask, 'tp'], expected_tp, atol=tolerance), "tp != vlf + lf + hf for some valid rows"
+
+
 print(df.columns)
 for c in df.columns:
     print(c)
 string_cols = ["patient", "visit", "gender", "risk-group", "site", "wave-type", "ai-status", "ae-status", "pe-status",
                "hr-status", "apgcomment", "measure-sensor", "ans-activity", "ans-activity-status", "ans-balance-status",
                "stress-resilience-status", "stress-index-status", "fatigue-index-status", "mean-hrt-status",
-               "electro-cardiac-stability-status", "ddrcomment", "vfl-(visceral-fat-level)", "tp", "vlf", "lf", "hf"]
-#TODO tp and vlf, lf, hf columns are strange, treating as strings
+               "electro-cardiac-stability-status", "ddrcomment", "vfl-(visceral-fat-level)"] # df['tp'] = df['tp'].apply(convert_to_float)
+#TODO tp and vlf, lf, hf columns are strange, treating as strings - fixed 05/26/2025
 date_cols = ["date-of-birth", "exam-date"]
 categorical_features = ["gender", "risk-group", "site", "wave-type", "ai-status", "ae-status", "pe-status", "hr-status",
                         "ans-activity", "ans-activity-status", "ans-balance-status", "stress-resilience-status",
