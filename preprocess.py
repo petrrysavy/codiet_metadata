@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from utils import empty_filed
+from datetime import datetime, time
 
 
 
@@ -23,6 +24,7 @@ def column_names_remove_spaces(df):
     df.columns = df.columns.str.replace(" ", "-", regex=True)
     df.columns = df.columns.str.replace("--", "-", regex=True)
     df.columns = df.columns.str.replace("-/-", "/", regex=True)
+    df.columns = df.columns.str.replace(".", "-", regex=False)
     return df
 
 
@@ -64,7 +66,7 @@ def variable_comment_unit_df_other_to_dict(df, names, other_info_name, name_lamb
     return column_comments, column_units, column_info
 
 
-def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], bool_cols=[], safe=True):
+def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], bool_cols=[], datetimetime_cols=[], safe=True):
     d = {}
     for col in int_cols:
         d[col] = "Int64"
@@ -74,6 +76,8 @@ def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], b
         d[col] = "string"
     for col in bool_cols:
         d[col] = "boolean"
+    for col in datetimetime_cols:
+        d[col] = "string"
 
     if safe:
         df = df.astype(d)
@@ -82,4 +86,15 @@ def change_types(df, int_cols=[], float_cols=[], string_cols=[], date_cols=[], b
 
     for col in date_cols:
         df[col] = pd.to_datetime(df[col], format='mixed')
+
+    def parse_time(x):
+        for fmt in ("%H:%M:%S", "%H:%M"):
+            try:
+                return datetime.strptime(x, fmt).time()
+            except ValueError:
+                continue
+        raise ValueError(f"Time format not recognized: {x}")
+    for col in datetimetime_cols:
+        #print(df[df[col].apply(lambda x: isinstance(x, float))])
+        df[col] = df[col].apply(lambda x: x if empty_filed(x) or isinstance(x, time) else parse_time(x))
     return df
