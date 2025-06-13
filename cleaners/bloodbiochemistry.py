@@ -146,6 +146,9 @@ for site in SITES:
     if site in ["UVEG"]:
         df = df.rename(columns=UVEGdict)
 
+    if 'hba1cifccstandardised' in df.columns:
+        df = df.rename(columns={'hba1cifccstandardised': 'hba1c'})
+
     merged_df = pd.concat([merged_df, df], ignore_index=True)
     print(merged_df)
 
@@ -168,7 +171,7 @@ df = df[["patient", "visit", "site"] + [col for col in df.columns if col not in 
 
 test_data_frame(df)
 
-metadata = DataFrameMetadata(df, "1.3", comment="Targeted NMR - serum", categorical_features=["visit", "site"], column_info=columns_info)
+metadata = DataFrameMetadata(df, "1.3", comment="Blood biochemistry", categorical_features=["visit", "site"], column_info=columns_info)
 
 save(metadata, "bloodbiochemistry")
 
