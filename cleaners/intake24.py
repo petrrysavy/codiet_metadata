@@ -6,12 +6,13 @@ from preprocess import *
 from metadata import DataFrameMetadata
 from inputoutput import save
 
-RAW_FILE_NAME = "CoDiet Intake24 Data -All sites.xlsx"
+#RAW_FILE_NAME = "CoDiet Intake24 Data -All sites.xlsx"
+RAW_FILE_NAME = "Updated Intake 24 Diaries - July 2025.xlsx"
 
 df = pd.read_excel(os.path.join(Settings().getdir(SettingsKeys.RAWDIR), RAW_FILE_NAME), index_col=None)
 print(df)
 
-df[['patient', 'visit']] = df['User ID'].str.extract(r'CD_(\d+)_V(\d)')
+df[['patient', 'visit']] = df['User ID'].str.extract(r'CD[_\-\s]*(\d+)[_\-\s]*V(\d)')
 df['patient'] = 'CD-' + df['patient']
 df['visit'] = 'V' + df['visit']
 
@@ -29,6 +30,13 @@ df = df.drop(columns=empty_cols)
 df = df.rename(columns={"Food group (en)": "Food group", "Serving size (g/ml)": "Serving size",
                         "Leftovers (g/ml)": "Leftovers", "Portion size (g/ml)": "Portion size",
                         "Energy (kcal)": "Energy", "Description (en)": "Description"})
+
+if "Survey ID" in df.columns:
+    df = df.drop(columns=["Survey ID"])
+if "Time to complete" in df.columns:
+    df = df.drop(columns=["Time to complete"])
+if "Nutrient table name" in df.columns:
+    df = df.drop(columns=["Nutrient table name"])
 
 df = column_names_to_lowercase(df)
 df = column_names_remove_spaces(df)
@@ -60,7 +68,7 @@ units = {
     "portion-size": "g or ml",
     "leftovers": "g or ml"
 }
-metadata = DataFrameMetadata(df, "1.3", column_units=units, comment="Intake 24, self reporting",
+metadata = DataFrameMetadata(df, "1.4", column_units=units, comment="Intake 24, self reporting",
                              categorical_features=["visit", "diet", "food-amount", "meal-name", "intake-24-food-code", "food-group"])
 
 save(metadata, "intake24")

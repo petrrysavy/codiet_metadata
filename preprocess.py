@@ -6,7 +6,24 @@ from datetime import datetime, time
 
 
 def clean_patient_column(df):
-    df["patient"] = df["patient"].str.replace(r"CD_(\d+)", r"CD-\1", regex=True)
+    df["patient"] = df["patient"].str.replace(r"[Cc][Dd][_-]?(\d+)\s*", r"CD-\1", regex=True)
+    return df
+
+
+def clean_site_column(df):
+    df = df.replace("AUTH", "Greece")
+    df = df.replace("TEAGASC", "Cork")
+    df = df.replace("Atlantia", "Cork")
+    df = df.replace("CORK", "Cork")
+    df = df.replace("CBG", "Bilbao")
+    df = df.replace("CIC", "Bilbao")
+    df = df.replace("BILBAO", "Bilbao")
+    return df
+
+
+def clean_gender_column(df):
+    df = df.replace("male", "Male")
+    df = df.replace("female", "Female")
     return df
 
 
