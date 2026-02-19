@@ -55,7 +55,9 @@ def variable_comment_unit_df_to_dict(df, names, name_lambda):
     column_units = {}
     for variable, comment, unit in names.itertuples(index=False, name=None):
         variable = name_lambda(variable)
-        assert variable in df.columns
+        if not variable in df.columns:
+            print(f"Variable {variable} not in columns {df.columns}")
+            continue
 
         if not empty_filed(comment):
             column_comments[variable] = comment

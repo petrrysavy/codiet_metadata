@@ -7,7 +7,7 @@ from inputoutput import save
 
 ### Targeted NMR - urine
 
-RAW_FILE_NAME = "unified-nmr-targeted-urine.xlsx"
+RAW_FILE_NAME = "unified-nmr-targeted-urine_v2.xlsx"
 RAW_FILE_NAME_V1 = "NMR_Urine_metabolites_CIC (Spain-Greece).xlsx"
 
 
@@ -47,7 +47,7 @@ test_data_frame(df)
 
 test_data_frame(df)
 
-metadata = DataFrameMetadata(df, "2.0", comment="Targeted NMR - urine, unified", categorical_features=["visit", "site"],
+metadata = DataFrameMetadata(df, "2.1", comment="Targeted NMR - urine, unified", categorical_features=["visit", "site"],
                              column_units=column_units, column_info=column_info)
 
 save(metadata, "nmr-targeted-urine")

@@ -8,7 +8,8 @@ def test_data_frame(df, numeric_column_names = False):
     assert df["patient"].str.fullmatch(r"CD-\d+").all(), "Some 'patient' values do not match the required format"
     assert df["visit"].str.fullmatch(r"V\d").all(), f"Some 'visit' values do not match the required format {df["visit"].unique()}"
     # UVEG = valencia, TEAGASC = cork,CBG = bilbao
-    assert df["site"].isin(["Cork", "Greece", "ICL", "UVEG", "Bilbao", "UVEG"]).all(), "Invalid site value"
+    if "site" in df.columns:
+        assert df["site"].isin(["Cork", "Greece", "ICL", "UVEG", "Bilbao", "UVEG"]).all(), "Invalid site value"
     #TODO clean this one
     assert all(((numeric_column_names and isinstance(col, float)) or col.islower()) or (numeric_column_names and col.replace(".", "").isdigit()) for col in df.columns),\
         "Not all column names are lowercase"

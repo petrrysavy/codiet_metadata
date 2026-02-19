@@ -10,7 +10,7 @@ from scipy import stats
 ### MASS SPECTROMETRY - serum
 
 RAW_FILE_NAME = "nmr_serum_metabolomics_CoDiet_CICbioGUNE.v2.xlsx"
-RAW_FILE_NAME_2 = "CODIET_UK_IRELAND_SERUM_QUANTITATIVE_METABOLITES_IGP.xlsx"
+RAW_FILE_NAME_2 = "CODIET_UK_IRELAND_SERUM_QUANTITATIVE_METABOLITES_IGP_corrected(1).xlsx"
 
 df = pd.read_excel(os.path.join(Settings().getdir(SettingsKeys.RAWDIR), RAW_FILE_NAME))
 print(df)
